@@ -177,10 +177,11 @@ public class JSONTokener {
         Number a = null;
         if(i<0){
             a = Integer.parseInt(numberStr);
+            return new Token(a.toString(),JSONType.JSON_INT);
         }else{
             a = Double.parseDouble(numberStr);
+            return new Token(a.toString(),JSONType.JSON_DOUBLE);
         }
-        return new Token(a.toString(),JSONType.JSON_NUMBER);
     }
 
     public Token nextToken(){
