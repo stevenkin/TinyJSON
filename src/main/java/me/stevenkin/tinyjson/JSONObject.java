@@ -14,7 +14,7 @@ public class JSONObject {
     private static final int EXCEPT_COLON = 2;
     private static final int EXCEPT_VALUE = 5;
     private static final int EXCEPT_COMMA = 3;
-    private static final int EXCEPT_END = 4;
+    private static final int END = 4;
 
     private JSONTokener tokener;
 
@@ -37,7 +37,7 @@ public class JSONObject {
         Token token = null;
         JSONType type = null;
         String key = "";
-       outer: while(true){
+        while(this.status!=END){
             token = this.tokener.nextToken();
             type = token.getType();
             if(this.status==EXCEPT_VALUE){
@@ -89,11 +89,14 @@ public class JSONObject {
                     checkStatus(EXCEPT_COMMA,EXCEPT_STRING);
                     break;
                 case END_OBEJCT:
-                    checkStatus(EXCEPT_COMMA,EXCEPT_END);
-                    break outer;
+                    checkStatus(EXCEPT_COMMA,END);
+                    break;
                 default:
                     throw new JSONException("build jsonobject error");
             }
+        }
+        if(this.status!=END){
+            throw new JSONException("build jsonobject error");
         }
     }
 
@@ -156,7 +159,7 @@ public class JSONObject {
                     break;
                 default:
                     if ((c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
-                        stringBuilder.append(Integer.toHexString(c));
+                        stringBuilder.append("\\u").append(Integer.toHexString(c));
                     }else{
                         stringBuilder.append(c);
                     }
