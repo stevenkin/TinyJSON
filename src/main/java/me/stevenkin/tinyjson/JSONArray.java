@@ -91,7 +91,59 @@ public class JSONArray {
         }
     }
 
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        boolean isFirst = true;
+        for(Object value : this.list){
+            if(isFirst){
+                isFirst = !isFirst;
+            }else{
+                stringBuilder.append(",");
+            }
+            if(value instanceof String){
+                stringBuilder.append('"');
+                stringBuilder.append(escapeString((String)value));
+                stringBuilder.append('"');
+            }else{
+                stringBuilder.append(value.toString());
+            }
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
 
+    private String escapeString(String string){
+        char[] chars = string.toCharArray();
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i=0;i<chars.length;i++){
+            char c = chars[i];
+            switch (c){
+                case '\b':
+                    stringBuilder.append("\\b");
+                    break;
+                case '\t':
+                    stringBuilder.append("\\t");
+                    break;
+                case '\n':
+                    stringBuilder.append("\\n");
+                    break;
+                case '\f':
+                    stringBuilder.append("\\f");
+                    break;
+                case '\r':
+                    stringBuilder.append("\\r");
+                    break;
+                default:
+                    if ((c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                        stringBuilder.append("\\u").append(Integer.toHexString(c));
+                    }else{
+                        stringBuilder.append(c);
+                    }
+            }
+        }
+        return stringBuilder.toString();
+    }
 
 
 }
